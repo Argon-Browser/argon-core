@@ -3,11 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_H_
-#define BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_H_
+#ifndef BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_VIEWS_H_
+#define BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_VIEWS_H_
 
 #define TabGroupStyle TabGroupStyle_ChromiumImpl
-#include <chrome/browser/ui/views/tabs/tab_group_style.h>  // IWYU pragma: export
+#include <chrome/browser/ui/views/tabs/tab_group_style_views.h>  // IWYU pragma: export
 #undef TabGroupStyle
 
 class TabGroupStyle : public TabGroupStyle_ChromiumImpl {
@@ -28,4 +28,4 @@ class TabGroupStyle : public TabGroupStyle_ChromiumImpl {
   bool ShouldShowBraveVerticalTabs() const;
 };
 
-#endif  // BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_H_
+#endif  // BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_VIEWS_H_
