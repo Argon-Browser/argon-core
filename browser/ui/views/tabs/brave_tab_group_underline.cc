@@ -22,7 +22,7 @@
 BraveTabGroupUnderline::BraveTabGroupUnderline(
     TabGroupViews* tab_group_views,
     const tab_groups::TabGroupId& group,
-    const TabGroupStyle& style)
+    const TabGroupStyleViews& style)
     : TabGroupUnderline(tab_group_views, group, style) {}
 
 BraveTabGroupUnderline::~BraveTabGroupUnderline() = default;
@@ -43,7 +43,7 @@ void BraveTabGroupUnderline::UpdateBounds(const views::View* leading_view,
   }
 
   SetBounds(0, tab_group_underline_bounds.y(),
-            TabGroupStyle::kStrokeThicknessForVerticalTabs,
+            TabGroupStyleViews::kStrokeThicknessForVerticalTabs,
             tab_group_underline_bounds.height());
 }
 

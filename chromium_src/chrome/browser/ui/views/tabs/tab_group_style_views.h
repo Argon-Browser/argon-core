@@ -6,13 +6,13 @@
 #ifndef BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_VIEWS_H_
 #define BRAVE_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_TABS_TAB_GROUP_STYLE_VIEWS_H_
 
-#define TabGroupStyle TabGroupStyle_ChromiumImpl
+#define TabGroupStyleViews TabGroupStyleViews_ChromiumImpl
 #include <chrome/browser/ui/views/tabs/tab_group_style_views.h>  // IWYU pragma: export
-#undef TabGroupStyle
+#undef TabGroupStyleViews
 
-class TabGroupStyle : public TabGroupStyle_ChromiumImpl {
+class TabGroupStyleViews : public TabGroupStyleViews_ChromiumImpl {
  public:
-  using TabGroupStyle_ChromiumImpl::TabGroupStyle_ChromiumImpl;
+  using TabGroupStyleViews_ChromiumImpl::TabGroupStyleViews_ChromiumImpl;
 
   static constexpr int kStrokeThicknessForVerticalTabs = 4;
 
