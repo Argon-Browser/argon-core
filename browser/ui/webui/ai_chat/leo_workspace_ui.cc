@@ -28,10 +28,14 @@ bool LeoWorkspaceUIConfig::IsWebUIEnabled(
          base::FeatureList::IsEnabled(features::kAIChatWorkspaceTools);
 }
 
+bool LeoWorkspaceUIConfig::ShouldHandleSubdomains() const {
+  return true;
+}
+
 std::unique_ptr<content::WebUIController>
 LeoWorkspaceUIConfig::CreateWebUIController(content::WebUI* web_ui,
                                             const GURL& url) {
-  return std::make_unique<LeoWorkspaceUI>(web_ui);
+  return std::make_unique<LeoWorkspaceUI>(web_ui, url);
 }
 
 LeoWorkspaceUIConfig::LeoWorkspaceUIConfig()
@@ -40,11 +44,14 @@ LeoWorkspaceUIConfig::LeoWorkspaceUIConfig()
 
 LeoWorkspaceUIConfig::~LeoWorkspaceUIConfig() = default;
 
-LeoWorkspaceUI::LeoWorkspaceUI(content::WebUI* web_ui)
+LeoWorkspaceUI::LeoWorkspaceUI(content::WebUI* web_ui, const GURL& url)
     : ui::UntrustedWebUIController(web_ui) {
   auto* browser_context = web_ui->GetWebContents()->GetBrowserContext();
+  // Untrusted data sources are looked up by the requested URL's origin, so each
+  // workspace subdomain needs a data source of its own rather than one shared
+  // by the parent host.
   auto* source = content::WebUIDataSource::CreateAndAdd(
-      browser_context, kAIChatLeoWorkspaceUIURL);
+      browser_context, url.DeprecatedGetOriginAsURL().spec());
 
   webui::SetupWebUIDataSource(source, kAiChatUiGenerated,
                               IDR_AI_CHAT_LEO_WORKSPACE_HTML);
