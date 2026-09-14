@@ -6,14 +6,6 @@
 substitutions:
   - description: |-
       Fully qualify kReadAnythingTranslateEntryPoint as ::features.
-
-      Brave's chromium_src override of translate_bubble_view.h (transitively
-      included by this file) pulls in
-      brave/components/translate/core/common/brave_translate_features.h,
-      which declares a translate::features namespace. Since this test lives
-      inside namespace translate, the unqualified `features::` here now
-      resolves to that nested namespace instead of the top-level one that
-      declares kReadAnythingTranslateEntryPoint.
     regex:
       re_pattern: '\bfeatures::kReadAnythingTranslateEntryPoint\b'
       replace: '::features::kReadAnythingTranslateEntryPoint'
