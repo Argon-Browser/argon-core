@@ -1,258 +1,162 @@
-![Brave Browser](./docs/images/brave.svg)
-
-# Brave Core
-
-Brave Core is a set of changes, APIs, and scripts used for customizing Chromium
-to make the Brave browser. Please also check
-https://github.com/brave/brave-browser which only holds the issues, releases and
-the wiki.
-
-## Overview
-
-This repository holds the build tools needed to build the Brave desktop browser
-for all platforms. In particular, it fetches and syncs code from the projects
-defined in `package.json` and `src/brave/DEPS`:
-
-- [Chromium](https://chromium.googlesource.com/chromium/src.git)
-  - Fetches code via `depot_tools`.
-  - Sets the branch for Chromium (ex: 65.0.3325.181).
-- [brave-core](https://github.com/brave/brave-core)
-  - Mounted at `src/brave`.
-  - Maintains patches for 3rd party Chromium code.
-- [adblock-rust](https://github.com/brave/adblock-rust)
-  - Implements Brave's adblock engine.
-  - Linked through
-    [brave/adblock-rust-ffi](https://github.com/brave/brave-core/tree/master/components/adblock_rust_ffi).
-
-## Resources
-
-- [Documentation and guides](https://github.com/brave/brave-core/blob/master/docs/README.md)
-- [Issues](https://github.com/brave/brave-browser/issues)
-- [Releases](https://github.com/brave/brave-browser/releases)
-- [Wiki](https://github.com/brave/brave-browser/wiki)
-
-## Downloads
-
-You can [visit our website](https://brave.com/download) to get the latest stable
-release.
-
-## Contributing
-
-Please see the [contributing guidelines](./CONTRIBUTING.md).
-
-Our [Wiki](https://github.com/brave/brave-browser/wiki) also has some useful
-technical information, especially about setting the development environment.
-
-## Security Policy
-
-Please see the [security policy](./SECURITY.md).
-
-## Community
-
-[Join the Q&A community](https://community.brave.app/) if you'd like to get more
-involved with Brave. You can
-[ask for help](https://community.brave.app/c/support-and-troubleshooting),
-[discuss features you'd like to see](https://community.brave.app/c/brave-feature-requests),
-and a lot more. We'd love to have your help so that we can continue improving
-Brave.
-
-You can also ask questions and interact in the
-[`community-guest`](https://bravesoftware.slack.com) channel on Brave Software's
-Slack.
-
-Help us translate Brave to your language by submitting translations at
-https://explore.transifex.com/brave/brave_en/.
-
-Follow [@brave](https://x.com/brave) on X for important news and announcements.
-
-## Install prerequisites
-
-Follow the instructions for your platform:
-
-- [Android](https://github.com/brave/brave-browser/wiki/Android-Development-Environment)
-- [Linux](https://github.com/brave/brave-browser/wiki/Linux-Development-Environment)
-- [iOS](https://github.com/brave/brave-browser/wiki/iOS-Development-Environment)
-- [macOS](https://github.com/brave/brave-browser/wiki/macOS-Development-Environment)
-- [Windows](https://github.com/brave/brave-browser/wiki/Windows-Development-Environment)
-
-## Clone and initialize
-
-Once you have the prerequisites installed, you can get the code and initialize
-the build environment.
-
-**Clone the repo.** `brave-core` must be checked out into `./src/brave` within a
-pre-existing project folder:
-
-```bash
-git clone git@github.com:brave/brave-core.git path-to-your-project-folder/src/brave
-cd path-to-your-project-folder/src/brave
-```
-
-**Initialize the build environment.** This step will download the Chromium
-source, which has a large history (10's of gigabytes of data). This might take a
-really long time to finish depending on internet speed.
-
-```bash
-# Most builds:
-pnpm run init
-
-# Android builds (replace `arm` with whichever CPU type you want to build for):
-pnpm run init --target_os=android --target_arch=arm
-
-# iOS builds:
-pnpm run init --target_os=ios
-```
-
-Additional config needed to build are documented at
-https://github.com/brave/brave-browser/wiki/Build-configuration
-
-Internal developers can find more information at
-https://github.com/brave/internal/wiki/Build-configuration
-
-## Build Brave
-
-The default build type is component.
-
-```
-# start the component build compile
-pnpm run build
-```
-
-To do a release build:
-
-```
-# start the release compile
-pnpm run build Release
-```
-
-brave-core based android builds should use
-`pnpm run build --target_os=android --target_arch=arm`
-
-brave-core based iOS builds should use the Xcode project found in
-`ios/brave-ios/App`. You can open this project directly or run
-`pnpm run ios_bootstrap --open_xcodeproj` to have it opened in Xcode. See the
-[iOS Developer Environment](https://github.com/brave/brave-browser/wiki/iOS-Development-Environment#Building)
-for more information on iOS builds.
-
-### Build Configurations
-
-Running a release build with `pnpm run build Release` can be very slow and use a
-lot of RAM, especially on Linux with the Gold LLVM plugin.
-
-To run a statically linked build (takes longer to build, but starts faster):
-
-```bash
-pnpm run build Static
-```
-
-To run a debug build (Component build with is_debug=true):
-
-```bash
-pnpm run build Debug
-```
-
-NOTE: the build will take a while to complete. Depending on your processor and
-memory, it could potentially take a few hours.
-
-## Run Brave
-
-To start the build:
-
-`pnpm start [Release|Component|Static|Debug]`
-
-## Update Brave
-
-`pnpm run sync [--force] [--init] [--create] [brave_core_ref]`
-
-**This will attempt to stash your local changes in brave-core, but it's safer to
-commit local changes before running this**
-
-`pnpm run sync` will (depending on the below flags):
-
-1. 📥 Update sub-projects (chromium, brave-core) to latest commit of a git ref
-   (e.g. tag or branch)
-2. 🤕 Apply patches
-3. 🔄 Update gclient DEPS dependencies
-4. ⏩ Run hooks
-
-| flag                           | Description                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `[no flags]`                   | updates chromium if needed and re-applies patches. If the chromium version did not change, it will only re-apply patches that have changed. Will update child dependencies **only if any project needed updating during this script run**. <br> **Use this if you want the script to manage keeping you up to date instead of pulling or switching branches manually. **   |
-| `--force`                      | updates both _Chromium_ and _brave-core_ to the latest remote commit for the current brave-core branch and the _Chromium_ ref specified in brave-core/package.json (e.g. `master` or `74.0.0.103`). Will re-apply all patches. Will force update all child dependencies. <br> **Use this if you're having trouble and want to force the branches back to a known state. ** |
-| `--init`                       | force update both _Chromium_ and _brave-core_ to the versions specified in brave-core/package.json and force updates all dependent repos - same as `pnpm run init`                                                                                                                                                                                                         |
-| `--sync_chromium (true/false)` | Will force or skip the chromium version update when applicable. Useful if you want to avoid a minor update when not ready for the larger build time a chromium update may result in. A warning will be output about the current code state expecting a different chromium version. Your build may fail as a result.                                                        |
-| `-D, --delete_unused_deps`     | Will delete from the working copy any dependencies that have been removed since the last sync. Mimics `gclient sync -D`.                                                                                                                                                                                                                                                   |
-
-Run `pnpm run sync brave_core_ref` to checkout the specified _brave-core_ ref
-and update all dependent repos including chromium if needed.
-
-## Scenarios
-
-#### Create a new branch:
-
-```bash
-> cd src/brave
-src/brave> git checkout -b branch_name
-```
-
-#### Checkout an existing branch or tag:
-
-```bash
-src/brave> git fetch origin
-src/brave> git checkout [-b] branch_name
-src/brave> pnpm run sync
-...Updating 2 patches...
-...Updating child dependencies...
-...Running hooks...
-```
-
-#### Update the current branch to the latest remote:
-
-```bash
-src/brave> git pull
-src/brave> pnpm run sync
-...Updating 2 patches...
-...Updating child dependencies...
-...Running hooks...
-```
-
-#### Reset to latest brave-core master (via `init`, will always result in a longer build and will remove any pending changes in your brave-core working directory):
-
-```bash
-src/brave> git checkout master
-src/brave> git pull
-src/brave> pnpm run sync --init
-```
-
-#### When you know that DEPS didn't change, but .patch files did (quickest attempt to perform a mini-sync before a build):
-
-```bash
-src/brave> git checkout featureB
-src/brave> git pull
-src/brave> pnpm run apply_patches
-...Applying 2 patches...
-```
-
-## Enabling third-party APIs
-
-1. **Google Safe Browsing**: Get an API key with SafeBrowsing API enabled from
-   https://console.developers.google.com/. Update the `GOOGLE_API_KEY`
-   environment variable with your key as per
-   https://www.chromium.org/developers/how-tos/api-keys to enable Google
-   SafeBrowsing.
+# Argon Browser
+
+**A simpler browsing experience, built on Brave and Chromium.**
+
+Argon is an independent browser project inspired by the minimal direction of
+Brave Origin. This repository is a fork of
+[Brave Core](https://github.com/brave/brave-core) and contains the source changes,
+patches, and build tools used to develop Argon.
+
+The name comes from **argon (Ar)**, the noble gas with atomic number **18**.
+It reflects the project's intended character: quiet, restrained, and focused
+on browsing.
+
+[Source code](https://github.com/Argon-Browser/argon-core) ·
+[Upstream documentation](https://github.com/brave/brave-browser/wiki) ·
+[License](./LICENSE)
+
+## Project status
+
+Argon is in early development. The fork inherits Brave's code and build system;
+Argon-specific branding, feature selection, packaging, and release workflows
+are being established.
+
+The goals below describe the intended direction, not a list of completed
+features. Existing Brave identifiers, resources, and service integrations may
+still appear in the source and in development builds. Forking this repository
+alone does not select or validate a Brave Origin build configuration.
+
+## Direction
+
+- **Minimal interface:** keep everyday browsing at the center of the experience.
+- **Privacy:** build on the privacy protections available in the upstream code.
+- **Focused features:** evaluate optional integrations against the project's
+  simpler browsing goals.
+- **Maintainability:** keep changes focused so upstream fixes can be integrated
+  and tested regularly.
+- **Open development:** document changes and make the source available for
+  inspection and contribution.
+
+## Repository structure
+
+Argon uses the build layout inherited from Brave:
+
+| Component | Role |
+| --- | --- |
+| [Chromium](https://chromium.googlesource.com/chromium/src.git) | Browser foundation, checked out into `src/`. |
+| [argon-core](https://github.com/Argon-Browser/argon-core) | This fork, checked out into `src/brave/`. |
+| [adblock-rust](https://github.com/brave/adblock-rust) | Upstream ad-blocking engine used by Brave. |
+
+Keep the directory name **`src/brave`**, even when the repository is named
+`argon-core`. The inherited build tools expect that layout. Chromium and other
+dependencies are fetched during initialization; this repository is not a
+standalone checkout of the entire browser source tree.
 
 ## Development
 
-- [Security rules from Chromium](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/rules.md)
-- [IPC review guidelines](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/security/ipc-reviews.md)
-  (in particular
-  [this reference](https://docs.google.com/document/d/1Kw4aTuISF7csHnjOpDJGc7JYIjlvOAKRprCTBVWw_E4/edit#heading=h.84bpc1e9z1bg))
-- [Brave's internal security guidelines](https://github.com/brave/internal/wiki/Pull-request-security-audit-checklist)
-  (for employees only)
-- [Rust usage](https://github.com/brave/brave-core/blob/master/docs/rust.md)
+The commands below follow the inherited Brave build workflow. They are a
+starting point for development, not a validated Argon release recipe.
 
-## Troubleshooting
+### Prerequisites
 
-See
-[Troubleshooting](https://github.com/brave/brave-browser/wiki/Troubleshooting)
-for solutions to common problems.
+Install Git, the Node.js and pnpm versions required by
+[`package.json`](./package.json), and the dependencies for your host platform:
+
+- [Linux](https://github.com/brave/brave-browser/wiki/Linux-Development-Environment)
+- [macOS](https://github.com/brave/brave-browser/wiki/macOS-Development-Environment)
+- [Windows](https://github.com/brave/brave-browser/wiki/Windows-Development-Environment)
+
+Upstream also documents
+[Android](https://github.com/brave/brave-browser/wiki/Android-Development-Environment)
+and [iOS](https://github.com/brave/brave-browser/wiki/iOS-Development-Environment).
+These references describe Brave's platform support; Argon builds must be
+validated separately.
+
+Compiling a Chromium-based browser requires substantial disk space, memory,
+and processing time. Check the platform requirements before initializing the
+checkout, including when using a remote development environment.
+
+### Clone and initialize
+
+```bash
+mkdir -p argon/src
+git clone https://github.com/Argon-Browser/argon-core.git argon/src/brave
+cd argon/src/brave
+pnpm run init
+```
+
+Initialization installs JavaScript dependencies and downloads Chromium and the
+other required projects. See the upstream
+[build configuration guide](https://github.com/brave/brave-browser/wiki/Build-configuration)
+for service-dependent settings and release configuration.
+
+### Build and run
+
+For the default component development build:
+
+```bash
+pnpm run build
+pnpm start Component
+```
+
+Other inherited build configurations:
+
+| Command | Configuration |
+| --- | --- |
+| `pnpm run build Debug` | Debug build. |
+| `pnpm run build Static` | Statically linked build. |
+| `pnpm run build Release` | Release build configuration. |
+
+Running a release build does not by itself configure Argon branding, signing,
+distribution, or automatic updates.
+
+### Sync dependencies
+
+Commit your work before updating the checkout or synchronizing dependencies.
+From `src/brave`, run:
+
+```bash
+pnpm run sync
+```
+
+This uses the current checkout's configuration to synchronize dependencies and
+apply patches. Incorporating new Brave changes into the Argon fork is a
+separate Git integration and review step.
+
+### Documentation
+
+- [Source documentation](./docs/README.md)
+- [Upstream developer wiki](https://github.com/brave/brave-browser/wiki)
+- [Build troubleshooting](https://github.com/brave/brave-browser/wiki/Troubleshooting)
+- [Rust development](./docs/rust.md)
+
+Some inherited documentation still refers to Brave infrastructure and internal
+resources. Access to those services is not provided by this fork.
+
+## Contributing
+
+Keep changes small, explain their purpose, and include the validation relevant
+to the affected behavior. Submit Argon changes to this repository.
+
+The inherited [contributing guidelines](./CONTRIBUTING.md) provide upstream
+technical context; Brave-specific submission and contact instructions apply
+to the upstream project.
+
+For security-sensitive changes, consult Chromium's
+[security rules](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/rules.md)
+and [IPC review guidance](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/security/ipc-reviews.md).
+The inherited [security policy](./SECURITY.md) describes upstream reporting
+procedures and should not be interpreted as an Argon-specific response service.
+
+## Credits and license
+
+Argon builds on the work of the Brave, Chromium, adblock-rust, and other
+open-source contributors whose code is included in this project.
+
+This repository retains the **Mozilla Public License 2.0**; see
+[`LICENSE`](./LICENSE). Included third-party code retains its respective
+licenses and copyright notices.
+
+Argon is an independent project and is not affiliated with or endorsed by
+Brave Software or Google. Brave and Chromium names are used to identify the
+upstream projects.
