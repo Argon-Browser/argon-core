@@ -1,8 +1,8 @@
 diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.cc
-index 25de20c479a9253a2bb098c344ea02d7b5473b85..7acc65daf193a966427175bffdd23f8e2dbfe188 100644
+index 4ba2341e85d7045ea1736e86bea287695f85a7d3..6ec38fbcce4c8c9cfb6c786892541dae8d66ff8d 100644
 --- a/components/search/ntp_features.cc
 +++ b/components/search/ntp_features.cc
-@@ -24,17 +24,14 @@ BASE_FEATURE(kConfirmSuggestionRemovals,
+@@ -18,17 +18,14 @@ namespace ntp_features {
  
  // If enabled, shows an extension card within the Customize Chrome Side
  // Panel for access to the Chrome Web Store extensions.
@@ -21,7 +21,7 @@ index 25de20c479a9253a2bb098c344ea02d7b5473b85..7acc65daf193a966427175bffdd23f8e
  
  // If enabled, shows entry point on Customize Chrome Side Panel's Appearance
  // page for Wallpaper Search.";
-@@ -75,28 +72,22 @@ BASE_FEATURE(kRealboxCr23Theming,
+@@ -68,28 +65,22 @@ BASE_FEATURE(kRealboxCr23Theming,
  
  // If enabled, alpha NTP backgrounds will show in Customize Chrome.
  // This is a development switch. Keep indefinitely.
@@ -52,7 +52,7 @@ index 25de20c479a9253a2bb098c344ea02d7b5473b85..7acc65daf193a966427175bffdd23f8e
  
  // If enabled, customization of Chrome will be promoted on the NTP.
  BASE_FEATURE(kNtpCustomizeChromeAutoOpen, base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -119,17 +110,14 @@ BASE_FEATURE(kNtpDummyModules, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -112,17 +103,14 @@ BASE_FEATURE(kNtpDummyModules, base::FEATURE_DISABLED_BY_DEFAULT);
  // If enabled, Google Drive module will be shown.
  // This is a kill switch. Keep indefinitely.
  BASE_FEATURE(kNtpDriveModule,
@@ -71,7 +71,7 @@ index 25de20c479a9253a2bb098c344ea02d7b5473b85..7acc65daf193a966427175bffdd23f8e
  BASE_FEATURE(kNtpDriveModuleLink, base::FEATURE_DISABLED_BY_DEFAULT);
  
  // If enabled, segmentation data will be collected to decide whether or not to
-@@ -162,6 +150,7 @@ BASE_FEATURE(kNtpModulesOrder, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -155,6 +143,7 @@ BASE_FEATURE(kNtpModulesOrder, base::FEATURE_DISABLED_BY_DEFAULT);
  
  // Dummy feature to set param "NtpModulesMaxColumnCountParam".
  // This is used for an emergency Finch param. Keep indefinitely.

@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/devtools/features.cc b/chrome/browser/devtools/features.cc
-index 0a458178f89cc69cf3e6c9fb333bcc98b02f8ef3..c8789a5398e69c6c42dddc88610c106761c48689 100644
+index 5ee7e11791c3a566611d091983a7cf08bb396c29..358d639deb3be7fa3d3150fbdb84b5beaab8d4bc 100644
 --- a/chrome/browser/devtools/features.cc
 +++ b/chrome/browser/devtools/features.cc
 @@ -12,7 +12,11 @@ namespace features {
@@ -55,7 +55,7 @@ index 0a458178f89cc69cf3e6c9fb333bcc98b02f8ef3..c8789a5398e69c6c42dddc88610c1067
  
  // Whether Console Insights Teasers are enabled.
  BASE_FEATURE(kDevToolsConsoleInsightsTeasers,
-@@ -239,6 +247,7 @@ BASE_FEATURE(kDevToolsGeminiRebranding, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -244,6 +252,7 @@ BASE_FEATURE(kDevToolsGeminiRebranding, base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kDevToolsAiOriginTrialsApis, base::FEATURE_ENABLED_BY_DEFAULT);
  
